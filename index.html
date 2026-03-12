@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ملك الألغاز</title>
 <style>
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
-body{background:linear-gradient(135deg,#0f0f23,#1a1a2e);color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center}
-.game{background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:32px;max-width:440px;width:100%;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.8);border:2px solid rgba(100,150,255,0.4)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
+body{background:linear-gradient(135deg,#0f0f23,#1a1a2e);color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
+.game{background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:32px;max-width:440px;width:100%;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.8);border:2px solid rgba(100,150,255,0.4);position:relative}
 h1{font-size:3.5rem;margin-bottom:20px;background:linear-gradient(45deg,#FFD700,#FFA500);-webkit-background-clip:text;color:transparent}
 .level{font-size:1.4rem;color:#FFD700;font-weight:bold;margin-bottom:15px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;background:rgba(0,0,0,0.5);padding:20px;border-radius:25px;margin-bottom:30px}
@@ -33,7 +33,6 @@ h1{font-size:3.5rem;margin-bottom:20px;background:linear-gradient(45deg,#FFD700,
 .modal-content{background:rgba(30,30,60,0.98);padding:30px;border-radius:25px;width:90%;max-width:380px;border:2px solid #6496FF}
 .modal-content h2{color:#FFD700;margin-bottom:25px}
 .modal-content label{display:block;margin:15px 0;font-size:1.3rem}
-.modal-content button{margin-top:20px}
 </style>
 </head>
 <body>
@@ -89,16 +88,23 @@ h1{font-size:3.5rem;margin-bottom:20px;background:linear-gradient(45deg,#FFD700,
 </div>
 
 <script>
-// ====================== الكود كامل ======================
+// ====================== 10 أسئلة جاهزة ======================
+const questions = [
+  {q:"عاصمة مصر؟",a:["القاهرة","الإسكندرية","أسوان","الجيزة"],c:0,h:"أم الدنيا"},
+  {q:"كم عدد الكواكب؟",a:["8","9","7","10"],c:0,h:"بعد بلوتو"},
+  {q:"مخترع المصباح؟",a:["إديسون","تيسلا","بيل","جاليليو"],c:0,h:"أمريكي"},
+  {q:"أكبر محيط؟",a:["الهادئ","الأطلسي","الهندي","القطبي"],c:0,h:"ثلث الأرض"},
+  {q:"أول خليفة؟",a:["أبو بكر","عمر","عثمان","علي"],c:0,h:"الصديق"},
+  {q:"كم سورة في القرآن؟",a:["114","120","99","6236"],c:0,h:"عدد صحيح"},
+  {q:"كم لاعب في كرة القدم؟",a:["11","10","9","12"],c:0,h:"مع الحارس"},
+  {q:"رمز الماء الكيميائي؟",a:["H2O","CO2","O2","NaCl"],c:0,h:"بتشربه كل يوم"},
+  {q:"أسرع حيوان بري؟",a:["الفهد","الصقر","الأسد","الغزال"],c:0,h:"يجري 120 كم/س"},
+  {q:"من هو أول رئيس مصري؟",a:["محمد نجيب","جمال عبد الناصر","أنور السادات","حسني مبارك"],c:0,h:"اللواء"}
+];
+
 let current=0,score=0,lives=3,streak=0,isDaily=false,timer;
 const data = JSON.parse(localStorage.getItem('melkData')) || {level:1,coins:100,highScore:0,dailyDone:false,dailyDate:""};
 const today = new Date().toISOString().slice(0,10);
-
-const questions = [ /* ضع هنا كل الأسئلة بتاعتك */ 
-  {q:"عاصمة مصر؟",a:["القاهرة","الإسكندرية","أسوان","الجيزة"],c:0,h:"أم الدنيا"},
-  {q:"كم عدد الكواكب؟",a:["8","9","7","10"],c:0,h:"بعد بلوتو"},
-  // أضف باقي الأسئلة هنا
-];
 
 function updateStats(){
   document.getElementById('level').textContent = data.level;
@@ -110,16 +116,12 @@ function updateStats(){
 }
 
 function saveData(){localStorage.setItem('melkData',JSON.stringify(data));}
-
-function showScreen(id){
-  document.querySelectorAll('.game > div').forEach(d=>d.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-}
+function showScreen(id){document.querySelectorAll('.game > div').forEach(d=>d.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
 
 // الإعدادات
 function openSettings(){document.getElementById('settings-modal').classList.remove('hidden');}
 function closeSettings(){document.getElementById('settings-modal').classList.add('hidden');}
-function saveSettings(){alert('✅ تم حفظ الإعدادات'); closeSettings();}
+function saveSettings(){alert('✅ تم حفظ الإعدادات');closeSettings();}
 
 // تخطي السؤال
 function exitQuestion(){
@@ -128,7 +130,7 @@ function exitQuestion(){
   }
 }
 
-// باقي الدوال (startNormalGame, startDailyChallenge, nextQuestion, checkAnswer, إلخ)
+// باقي اللعبة
 function startNormalGame(){current=0;score=0;lives=3;streak=0;isDaily=false;showScreen('play');nextQuestion();}
 function startDailyChallenge(){
   if(data.dailyDone && data.dailyDate===today){alert('خلصت التحدي اليومي!');return;}
