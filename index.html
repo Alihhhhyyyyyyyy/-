@@ -5,160 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ملك الألغاز</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
 body{background:linear-gradient(135deg,#0f0f23,#1a1a2e);color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
-.game{background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:32px;max-width:440px;width:100%;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.8);border:2px solid rgba(100,150,255,0.4);position:relative}
+.game{background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:32px;max-width:440px;width:100%;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.8)}
 h1{font-size:3.5rem;margin-bottom:20px;background:linear-gradient(45deg,#FFD700,#FFA500);-webkit-background-clip:text;color:transparent}
-.level{font-size:1.4rem;color:#FFD700;font-weight:bold;margin-bottom:15px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;background:rgba(0,0,0,0.5);padding:20px;border-radius:25px;margin-bottom:30px}
-.btn{background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;border:none;padding:20px;margin:14px 0;border-radius:22px;font-size:1.5rem;font-weight:bold;cursor:pointer;width:100%;transition:all .5s}
+.btn{background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;border:none;padding:20px;margin:14px 0;border-radius:22px;font-size:1.5rem;font-weight:bold;cursor:pointer;width:100%}
 .btn:hover{transform:translateY(-8px)}
-.btn.premium{background:linear-gradient(135deg,#9B59B6,#8E44AD)}
-.choice{background:rgba(255,255,255,0.08);padding:22px;margin:14px 0;border-radius:20px;font-size:1.35rem;cursor:pointer;transition:all .5s}
-.choice:hover{background:rgba(100,150,255,0.2);transform:translateY(-5px)}
-.correct{background:#27AE60!important}
-.wrong{background:#E74C3C!important}
-#timer{height:14px;background:rgba(0,0,0,0.6);border-radius:12px;overflow:hidden;margin:30px 0}
-#timer-bar{height:100%;width:100%;background:linear-gradient(90deg,#FFD700,#FFA500);transition:width .8s ease}
-#feedback{margin:25px 0;font-size:1.6rem;min-height:60px;font-weight:bold}
-.hidden{display:none}
-
-/* أزرار علوية */
-.top-controls{position:absolute;top:15px;right:15px;display:flex;gap:10px;z-index:100}
-.btn-icon{background:rgba(255,255,255,0.1);border:2px solid #6496FF;color:#fff;font-size:1.8rem;width:50px;height:50px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.btn-icon:hover{background:rgba(100,150,255,0.3)}
-
-/* المودال */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:999}
-.modal-content{background:rgba(30,30,60,0.98);padding:30px;border-radius:25px;width:90%;max-width:380px;border:2px solid #6496FF}
-.modal-content h2{color:#FFD700;margin-bottom:25px}
-.modal-content label{display:block;margin:15px 0;font-size:1.3rem}
 </style>
 </head>
 <body>
 
 <div class="game">
-  <div class="top-controls">
-    <button class="btn-icon" onclick="openSettings()">⚙️</button>
-    <button class="btn-icon" onclick="exitQuestion()">✖</button>
-  </div>
-
   <h1>ملك الألغاز</h1>
-  <div class="level">المستوى <span id="level">1</span> - <span id="title">مبتدئ</span></div>
-  
-  <div class="stats">
-    <div>النقاط: <span id="score">0</span></div>
-    <div>العملات: <span id="coins">100</span></div>
-    <div>القلوب: <span id="lives">3</span></div>
-    <div>السلسلة: <span id="streak">0</span></div>
-  </div>
-
-  <div id="start">
-    <button class="btn" onclick="startNormalGame()">ابدأ اللعب</button>
-    <button class="btn daily" onclick="startDailyChallenge()">التحدي اليومي</button>
-    <button class="btn premium" onclick="openShop()">المتجر</button>
-    <button class="btn" onclick="showAchievements()">الإنجازات</button>
-  </div>
-
-  <div id="play" class="hidden">
-    <div id="question" style="font-size:1.8rem;margin:40px 0;line-height:1.7"></div>
-    <div id="choices"></div>
-    <button class="btn premium" onclick="useHint()">تلميح (-30 عملة)</button>
-    <button class="btn" onclick="watchRewardAd()">شاهد إعلان = 50 عملة</button>
-    <div id="timer"><div id="timer-bar"></div></div>
-    <div id="feedback"></div>
-  </div>
-
-  <div id="end" class="hidden">
-    <h2 style="font-size:3rem;color:#FFD700">مبروك يا ملك!</h2>
-    <div style="font-size:3.2rem;color:#FFD700;margin:30px">النقاط: <span id="finalScore">0</span></div>
-    <button class="btn" onclick="startNormalGame()">العب تاني</button>
-  </div>
+  <button class="btn" onclick="startGame()">ابدأ اللعب</button>
+  <button class="btn" onclick="openSettings()">⚙️ الإعدادات</button>
 </div>
 
-<!-- المودال مخفي من الأول -->
-<div id="settings-modal" class="modal hidden">
-  <div class="modal-content">
-    <h2>الإعدادات</h2>
-    <label><input type="checkbox" id="sound-toggle" checked> تشغيل الصوت</label>
-    <label><input type="checkbox" id="dark-mode-toggle"> الوضع الليلي</label>
-    <button class="btn" onclick="saveSettings()">حفظ</button>
-    <button class="btn" onclick="closeSettings()">إغلاق</button>
+<!-- المودال مخفي تمامًا -->
+<div id="settings-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);align-items:center;justify-content:center">
+  <div style="background:#1e1e3f;padding:30px;border-radius:25px;width:90%;max-width:380px">
+    <h2 style="color:#FFD700">الإعدادات</h2>
+    <p>تشغيل الصوت <input type="checkbox" checked></p>
+    <button onclick="saveSettings()" style="background:#27AE60;color:white;padding:15px;margin:10px;width:100%">حفظ</button>
+    <button onclick="closeSettings()" style="background:#E74C3C;color:white;padding:15px;margin:10px;width:100%">إغلاق</button>
   </div>
 </div>
 
 <script>
-// ====================== 10 أسئلة جاهزة ======================
-const questions = [
-  {q:"عاصمة مصر؟",a:["القاهرة","الإسكندرية","أسوان","الجيزة"],c:0,h:"أم الدنيا"},
-  {q:"كم عدد الكواكب؟",a:["8","9","7","10"],c:0,h:"بعد بلوتو"},
-  {q:"مخترع المصباح؟",a:["إديسون","تيسلا","بيل","جاليليو"],c:0,h:"أمريكي"},
-  {q:"أكبر محيط؟",a:["الهادئ","الأطلسي","الهندي","القطبي"],c:0,h:"ثلث الأرض"},
-  {q:"أول خليفة؟",a:["أبو بكر","عمر","عثمان","علي"],c:0,h:"الصديق"},
-  {q:"كم سورة في القرآن؟",a:["114","120","99","6236"],c:0,h:"عدد صحيح"},
-  {q:"كم لاعب في كرة القدم؟",a:["11","10","9","12"],c:0,h:"مع الحارس"},
-  {q:"رمز الماء الكيميائي؟",a:["H2O","CO2","O2","NaCl"],c:0,h:"بتشربه كل يوم"},
-  {q:"أسرع حيوان بري؟",a:["الفهد","الصقر","الأسد","الغزال"],c:0,h:"يجري 120 كم/س"},
-  {q:"من هو أول رئيس مصري؟",a:["محمد نجيب","جمال عبد الناصر","أنور السادات","حسني مبارك"],c:0,h:"اللواء"}
-];
-
-let current=0,score=0,lives=3,streak=0,isDaily=false,timer;
-const data = JSON.parse(localStorage.getItem('melkData')) || {level:1,coins:100,highScore:0,dailyDone:false,dailyDate:""};
-const today = new Date().toISOString().slice(0,10);
-
-function updateStats(){
-  document.getElementById('level').textContent = data.level;
-  document.getElementById('title').textContent = ["مبتدئ","محترف","خبير","أسطورة","ملك","إمبراطور"][Math.min(data.level-1,5)];
-  document.getElementById('score').textContent = score;
-  document.getElementById('coins').textContent = data.coins;
-  document.getElementById('lives').textContent = lives;
-  document.getElementById('streak').textContent = streak;
-}
-
-function saveData(){localStorage.setItem('melkData',JSON.stringify(data));}
-function showScreen(id){document.querySelectorAll('.game > div').forEach(d=>d.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
-
-// الإعدادات
-function openSettings(){document.getElementById('settings-modal').classList.remove('hidden');}
-function closeSettings(){document.getElementById('settings-modal').classList.add('hidden');}
-function saveSettings(){alert('✅ تم حفظ الإعدادات');closeSettings();}
-
-// تخطي السؤال
-function exitQuestion(){
-  if(confirm('هتخسر قلب واحد. متأكد؟')){
-    lives--; updateStats(); saveData(); current++; nextQuestion();
-  }
-}
-
-// باقي اللعبة
-function startNormalGame(){current=0;score=0;lives=3;streak=0;isDaily=false;showScreen('play');nextQuestion();}
-function startDailyChallenge(){
-  if(data.dailyDone && data.dailyDate===today){alert('خلصت التحدي اليومي!');return;}
-  current=0;score=0;lives=5;streak=0;isDaily=true;showScreen('play');nextQuestion();
-}
-function nextQuestion(){
-  if((isDaily&&current>=5)||(!isDaily&&current>=questions.length)||lives<=0){endGame();return;}
-  const q=questions[current];
-  document.getElementById('question').textContent=q.q;
-  const c=document.getElementById('choices');c.innerHTML='';
-  q.a.forEach((a,i)=>{const b=document.createElement('div');b.className='choice';b.textContent=a;b.onclick=()=>checkAnswer(i===q.c,b);c.appendChild(b)});
-  document.getElementById('feedback').textContent='';
-  startTimer(isDaily?15:25);
-}
-function checkAnswer(correct,btn){
-  clearInterval(timer);
-  document.querySelectorAll('.choice').forEach(b=>b.onclick=null);
-  if(correct){score+=isDaily?100:10;streak++;data.coins+=isDaily?100:10;btn.classList.add('correct');document.getElementById('feedback').textContent='صحيح! ✅';}
-  else{lives--;streak=0;btn.classList.add('wrong');document.getElementById('feedback').textContent='خطأ! الصح: '+questions[current].a[questions[current].c];}
-  updateStats();saveData();current++;setTimeout(nextQuestion,1800);
-}
-function startTimer(s){let t=s;document.getElementById('timer-bar').style.width='100%';timer=setInterval(()=>{t--;document.getElementById('timer-bar').style.width=(t/s*100)+'%';if(t<=0){lives--;updateStats();saveData();current++;nextQuestion();}},1000);}
-function useHint(){if(data.coins>=30){data.coins-=30;document.getElementById('feedback').textContent='تلميح: '+questions[current].h;updateStats();saveData();}}
-function watchRewardAd(){data.coins+=50;lives=Math.min(lives+1,5);updateStats();saveData();alert('+50 عملة + قلب');}
-function endGame(){clearInterval(timer);if(isDaily){data.coins+=500;data.dailyDone=true;data.dailyDate=today;alert('🎉 مبروك! 500 عملة');}document.getElementById('finalScore').textContent=score;showScreen('end');saveData();}
-
-updateStats();
-showScreen('start');
+function startGame(){alert('اللعبة بدأت!')}
+function openSettings(){document.getElementById('settings-modal').style.display='flex'}
+function closeSettings(){document.getElementById('settings-modal').style.display='none'}
+function saveSettings(){alert('✅ تم الحفظ');closeSettings()}
 </script>
 </body>
 </html>
