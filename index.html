@@ -4,12 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ملك الألغاز</title>
-  
-  <!-- ربط ملف التصميم -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="game">
+    <!-- أزرار التحكم العلوية -->
+    <div class="top-controls">
+      <button class="btn-icon" onclick="openSettings()">⚙</button>
+      <button class="btn-icon exit-btn" onclick="exitQuestion()">✖</button>
+    </div>
+
     <h1>ملك الألغاز</h1>
     <div class="level">المستوى <span id="level">1</span> - <span id="title">مبتدئ</span></div>
     
@@ -43,7 +47,21 @@
     </div>
   </div>
 
-  <!-- ربط ملف الأسئلة والكود -->
+  <!-- نافذة الإعدادات -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>الإعدادات</h2>
+      <label>
+        <input type="checkbox" id="sound-toggle" checked> تشغيل الصوت
+      </label>
+      <label>
+        <input type="checkbox" id="dark-mode-toggle"> الوضع الليلي
+      </label>
+      <button class="btn" onclick="saveSettings()">حفظ</button>
+      <button class="btn" onclick="closeSettings()">إغلاق</button>
+    </div>
+  </div>
+
   <script src="questions.js"></script>
   <script src="script.js"></script>
 </body>
