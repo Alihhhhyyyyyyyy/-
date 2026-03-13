@@ -1,11 +1,26 @@
-let current = 0, score = 0, lives = 3, streak = 0, isDaily = false, timer;
+// ================================================
+// script.js - ملك الألغاز (منظم وواضح)
+// ================================================
+
+// ==================== 1. المتغيرات العامة ====================
+let current = 0;
+let score = 0;
+let lives = 3;
+let streak = 0;
+let isDaily = false;
+let timer;
 
 const data = JSON.parse(localStorage.getItem('melkData')) || {
-    level: 1, coins: 100, highScore: 0, dailyDone: false, dailyDate: ""
+    level: 1,
+    coins: 100,
+    highScore: 0,
+    dailyDone: false,
+    dailyDate: ""
 };
 
-const today = new Date().toISOString().slice(0, 10);
+const today = new Date().toISOString().slice(0,10);
 
+// ==================== 2. دوال المساعدة ====================
 function updateStats() {
     document.getElementById('level').textContent = data.level;
     document.getElementById('title').textContent = ["مبتدئ","محترف","خبير","أسطورة","ملك","إمبراطور"][Math.min(data.level-1,5)];
@@ -24,7 +39,7 @@ function showScreen(id) {
     document.getElementById(id).classList.remove('hidden');
 }
 
-// ==================== الإعدادات ====================
+// ==================== 3. الإعدادات ====================
 function openSettings() {
     document.getElementById('settings-modal').classList.remove('hidden');
 }
@@ -34,13 +49,13 @@ function closeSettings() {
 }
 
 function saveSettings() {
-    alert('✅ تم حفظ الإعدادات بنجاح');
+    alert('✅ تم حفظ الإعدادات');
     closeSettings();
 }
 
-// ==================== تخطي السؤال ====================
+// ==================== 4. تخطي السؤال ====================
 function exitQuestion() {
-    if (confirm('هتخسر قلب واحد لو خرجت. متأكد؟')) {
+    if (confirm('هتخسر قلب واحد. متأكد؟')) {
         lives--;
         updateStats();
         saveData();
@@ -49,19 +64,35 @@ function exitQuestion() {
     }
 }
 
-// ==================== باقي الكود (بدء اللعبة) ====================
-function startNormalGame() { current=0; score=0; lives=3; streak=0; isDaily=false; showScreen('play'); nextQuestion(); }
-function startDailyChallenge() {
-    if (data.dailyDone && data.dailyDate === today) { alert('خلصت التحدي اليومي!'); return; }
-    current=0; score=0; lives=5; streak=0; isDaily=true; showScreen('play'); nextQuestion();
+// ==================== 5. بدء اللعب ====================
+function startNormalGame() {
+    current = 0; score = 0; lives = 3; streak = 0; isDaily = false;
+    showScreen('play');
+    nextQuestion();
 }
 
+function startDailyChallenge() {
+    if (data.dailyDone && data.dailyDate === today) {
+        alert('خلصت التحدي اليومي! ارجع بكرة');
+        return;
+    }
+    current = 0; score = 0; lives = 5; streak = 0; isDaily = true;
+    showScreen('play');
+    nextQuestion();
+}
+
+// ==================== 6. منطق اللعبة الرئيسي ====================
 function nextQuestion() {
-    if ((isDaily && current >= 5) || (!isDaily && current >= questions.length) || lives <= 0) { endGame(); return; }
+    if ((isDaily && current >= 5) || (!isDaily && current >= questions.length) || lives <= 0) {
+        endGame();
+        return;
+    }
+
     const q = questions[current];
     document.getElementById('question').textContent = q.q;
     const choicesDiv = document.getElementById('choices');
     choicesDiv.innerHTML = '';
+
     q.a.forEach((ans, i) => {
         const btn = document.createElement('div');
         btn.className = 'choice';
@@ -69,6 +100,7 @@ function nextQuestion() {
         btn.onclick = () => checkAnswer(i === q.c, btn);
         choicesDiv.appendChild(btn);
     });
+
     document.getElementById('feedback').textContent = '';
     startTimer(isDaily ? 15 : 25);
 }
@@ -76,6 +108,7 @@ function nextQuestion() {
 function checkAnswer(isCorrect, btn) {
     clearInterval(timer);
     document.querySelectorAll('.choice').forEach(b => b.onclick = null);
+
     if (isCorrect) {
         score += isDaily ? 100 : 10;
         streak++;
@@ -88,10 +121,11 @@ function checkAnswer(isCorrect, btn) {
         btn.classList.add('wrong');
         document.getElementById('feedback').textContent = 'خطأ! الصحيح: ' + questions[current].a[questions[current].c];
     }
+
     updateStats();
     saveData();
     current++;
-    setTimeout(nextQuestion, 1800);
+    setTimeout(nextQuestion, 2000);
 }
 
 function startTimer(seconds) {
@@ -101,26 +135,49 @@ function startTimer(seconds) {
     timer = setInterval(() => {
         timeLeft--;
         bar.style.width = (timeLeft / seconds * 100) + '%';
-        if (timeLeft <= 0) { lives--; updateStats(); saveData(); current++; nextQuestion(); }
+        if (timeLeft <= 0) {
+            lives--;
+            updateStats();
+            saveData();
+            current++;
+            nextQuestion();
+        }
     }, 1000);
 }
 
 function useHint() {
-    if (data.coins >= 30) { data.coins -= 30; document.getElementById('feedback').textContent = 'تلميح: ' + questions[current].h; updateStats(); saveData(); }
+    if (data.coins >= 30) {
+        data.coins -= 30;
+        document.getElementById('feedback').textContent = 'تلميح: ' + questions[current].h;
+        updateStats();
+        saveData();
+    }
 }
 
 function watchRewardAd() {
-    data.coins += 50; lives = Math.min(lives + 1, 5); updateStats(); saveData(); alert('✅ +50 عملة + قلب');
+    data.coins += 50;
+    lives = Math.min(lives + 1, 5);
+    updateStats();
+    saveData();
+    alert('✅ +50 عملة + قلب إضافي');
 }
 
 function endGame() {
     clearInterval(timer);
-    if (isDaily) { data.coins += 500; data.dailyDone = true; data.dailyDate = today; alert('🎉 مبروك! 500 عملة من التحدي اليومي'); }
+    if (isDaily) {
+        data.coins += 500;
+        data.dailyDone = true;
+        data.dailyDate = today;
+        alert('🎉 مبروك! كسبت 500 عملة من التحدي اليومي!');
+    }
     document.getElementById('finalScore').textContent = score;
     showScreen('end');
     saveData();
 }
 
-// بدء اللعبة
+function openShop() { alert('المتجر مفتوح (سيتم تطويره لاحقاً)'); }
+function showAchievements() { alert('الإنجازات: 0/50'); }
+
+// ==================== بدء التطبيق ====================
 updateStats();
 showScreen('start');
