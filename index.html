@@ -1,41 +1,64 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ملك الألغاز</title>
-<style>
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
-body{background:linear-gradient(135deg,#0f0f23,#1a1a2e);color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
-.game{background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:32px;max-width:440px;width:100%;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.8)}
-h1{font-size:3.5rem;margin-bottom:20px;background:linear-gradient(45deg,#FFD700,#FFA500);-webkit-background-clip:text;color:transparent}
-.btn{background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;border:none;padding:20px;margin:14px 0;border-radius:22px;font-size:1.5rem;font-weight:bold;cursor:pointer;width:100%}
-.btn:hover{transform:translateY(-8px)}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملك الألغاز</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="game">
+    <!-- أزرار التحكم العلوية -->
+    <div class="top-controls">
+      <button class="btn-icon" onclick="openSettings()">⚙️</button>
+      <button class="btn-icon exit-btn" onclick="exitQuestion()">✖</button>
+    </div>
 
-<div class="game">
-  <h1>ملك الألغاز</h1>
-  <button class="btn" onclick="startGame()">ابدأ اللعب</button>
-  <button class="btn" onclick="openSettings()">⚙️ الإعدادات</button>
-</div>
+    <h1>ملك الألغاز</h1>
+    <div class="level">المستوى <span id="level">1</span> - <span id="title">مبتدئ</span></div>
+    
+    <div class="stats">
+      <div>النقاط: <span id="score">0</span></div>
+      <div>العملات: <span id="coins">100</span></div>
+      <div>القلوب: <span id="lives">3</span></div>
+      <div>السلسلة: <span id="streak">0</span></div>
+    </div>
 
-<!-- المودال مخفي تمامًا -->
-<div id="settings-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);align-items:center;justify-content:center">
-  <div style="background:#1e1e3f;padding:30px;border-radius:25px;width:90%;max-width:380px">
-    <h2 style="color:#FFD700">الإعدادات</h2>
-    <p>تشغيل الصوت <input type="checkbox" checked></p>
-    <button onclick="saveSettings()" style="background:#27AE60;color:white;padding:15px;margin:10px;width:100%">حفظ</button>
-    <button onclick="closeSettings()" style="background:#E74C3C;color:white;padding:15px;margin:10px;width:100%">إغلاق</button>
+    <div id="start">
+      <button class="btn" onclick="startNormalGame()">ابدأ اللعب</button>
+      <button class="btn daily" onclick="startDailyChallenge()">التحدي اليومي</button>
+      <button class="btn premium" onclick="openShop()">المتجر</button>
+      <button class="btn" onclick="showAchievements()">الإنجازات</button>
+    </div>
+
+    <div id="play" class="hidden">
+      <div id="question"></div>
+      <div id="choices"></div>
+      <button class="btn premium" onclick="useHint()">تلميح (-30)</button>
+      <button class="btn" onclick="watchRewardAd()">شاهد إعلان = 50 عملة</button>
+      <div id="timer"><div id="timer-bar"></div></div>
+      <div id="feedback"></div>
+    </div>
+
+    <div id="end" class="hidden">
+      <h2>مبروك يا ملك!</h2>
+      <div style="font-size:3rem;color:#FFD700">النقاط: <span id="finalScore">0</span></div>
+      <button class="btn" onclick="startNormalGame()">العب تاني</button>
+    </div>
   </div>
-</div>
 
-<script>
-function startGame(){alert('اللعبة بدأت!')}
-function openSettings(){document.getElementById('settings-modal').style.display='flex'}
-function closeSettings(){document.getElementById('settings-modal').style.display='none'}
-function saveSettings(){alert('✅ تم الحفظ');closeSettings()}
-</script>
+  <!-- نافذة الإعدادات -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>الإعدادات</h2>
+      <label><input type="checkbox" id="sound-toggle" checked> تشغيل الصوت</label>
+      <label><input type="checkbox" id="dark-mode-toggle"> الوضع الليلي</label>
+      <button class="btn" onclick="saveSettings()">حفظ</button>
+      <button class="btn" onclick="closeSettings()">إغلاق</button>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
