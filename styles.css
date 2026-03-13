@@ -1,113 +1,29 @@
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-body {
-  background: linear-gradient(135deg, #0f0f23, #1a1a2e);
-  color: #fff;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-}
-.game {
-  background: rgba(20,20,40,0.95);
-  padding: 40px 30px;
-  border-radius: 32px;
-  max-width: 440px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 25px 70px rgba(0,0,0,0.8);
-  border: 2px solid rgba(100,150,255,0.4);
-}
-h1 { font-size: 3.5rem; margin-bottom: 20px; background: linear-gradient(45deg,#FFD700,#FFA500); -webkit-background-clip:text; color:transparent; }
-.level { font-size: 1.4rem; color: #FFD700; font-weight: bold; margin-bottom: 15px; }
-.stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 15px; background: rgba(0,0,0,0.5); padding: 20px; border-radius: 25px; margin-bottom: 30px; }
-.btn { background: linear-gradient(135deg,#1e3c72,#2a5298); color: white; border: none; padding: 20px; margin: 14px 0; border-radius: 22px; font-size: 1.5rem; font-weight: bold; cursor: pointer; width: 100%; transition: all 0.5s; }
-.btn:hover { transform: translateY(-8px); }
-.btn.premium { background: linear-gradient(135deg,#9B59B6,#8E44AD); }
-.btn.daily { background: linear-gradient(135deg,#27AE60,#2ECC71); }
-.choice { background: rgba(255,255,255,0.08); padding: 22px; margin: 14px 0; border-radius: 20px; font-size: 1.35rem; cursor: pointer; transition: all 0.5s; }
-.choice:hover { background: rgba(100,150,255,0.18); transform: translateY(-5px); }
-.correct { background: #27AE60 !important; }
-.wrong { background: #E74C3C !important; }
-#timer { height: 14px; background: rgba(0,0,0,0.6); border-radius: 12px; overflow: hidden; margin: 30px 0; }
-#timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg,#FFD700,#FFA500); transition: width 0.8s ease; }
-#feedback { margin: 25px 0; font-size: 1.6rem; min-height: 60px; font-weight: bold; }
-.hidden { display: none; }
-/* أزرار التحكم العلوية */
-.top-controls {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  left: 15px;
-  display: flex;
-  justify-content: space-between;
-  z-index: 100;
-}
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
+body {background:linear-gradient(135deg,#0f0f23,#1a1a2e);color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
+.game {background:rgba(20,20,40,0.95);padding:40px 30px;border-radius:32px;max-width:440px;width:100%;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.8);border:2px solid rgba(100,150,255,0.4);position:relative}
+h1 {font-size:3.5rem;margin-bottom:20px;background:linear-gradient(45deg,#FFD700,#FFA500);-webkit-background-clip:text;color:transparent}
+.level {font-size:1.4rem;color:#FFD700;font-weight:bold;margin-bottom:15px}
+.stats {display:grid;grid-template-columns:repeat(4,1fr);gap:15px;background:rgba(0,0,0,0.5);padding:20px;border-radius:25px;margin-bottom:30px}
+.btn {background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;border:none;padding:20px;margin:14px 0;border-radius:22px;font-size:1.5rem;font-weight:bold;cursor:pointer;width:100%;transition:all .5s}
+.btn:hover {transform:translateY(-8px)}
+.btn.premium {background:linear-gradient(135deg,#9B59B6,#8E44AD)}
+.btn.daily {background:linear-gradient(135deg,#27AE60,#2ECC71)}
+.choice {background:rgba(255,255,255,0.08);padding:22px;margin:14px 0;border-radius:20px;font-size:1.35rem;cursor:pointer;transition:all .5s}
+.choice:hover {background:rgba(100,150,255,0.18);transform:translateY(-5px)}
+.correct {background:#27AE60!important;color:white}
+.wrong {background:#E74C3C!important;color:white}
+#timer {height:14px;background:rgba(0,0,0,0.6);border-radius:12px;overflow:hidden;margin:30px 0}
+#timer-bar {height:100%;width:100%;background:linear-gradient(90deg,#FFD700,#FFA500);transition:width .8s ease}
+#feedback {margin:25px 0;font-size:1.6rem;min-height:60px;font-weight:bold}
+.hidden {display:none}
 
-.btn-icon {
-  background: rgba(255,255,255,0.1);
-  border: 2px solid #6496FF;
-  color: #fff;
-  font-size: 1.8rem;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-}
+/* أزرار علوية */
+.top-controls {position:absolute;top:15px;right:15px;display:flex;gap:10px;z-index:100}
+.btn-icon {background:rgba(255,255,255,0.1);border:2px solid #6496FF;color:#fff;font-size:1.8rem;width:50px;height:50px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.btn-icon:hover {background:rgba(100,150,255,0.3)}
 
-.btn-icon:hover {
-  background: rgba(100,150,255,0.3);
-  transform: scale(1.15);
-}
-
-.exit-btn {
-  background: rgba(231,76,60,0.3);
-  border-color: #E74C3C;
-}
-
-.exit-btn:hover {
-  background: rgba(231,76,60,0.6);
-}
-
-/* نافذة الإعدادات */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: rgba(30,30,60,0.95);
-  padding: 30px;
-  border-radius: 25px;
-  width: 90%;
-  max-width: 380px;
-  border: 2px solid #6496FF;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-  backdrop-filter: blur(10px);
-}
-
-.modal-content h2 {
-  margin-bottom: 25px;
-  color: #FFD700;
-  font-size: 2rem;
-}
-
-.modal-content label {
-  display: block;
-  margin: 15px 0;
-  font-size: 1.3rem;
-}
-
-.modal-content input[type="checkbox"] {
-  transform: scale(1.5);
-  margin-left: 10px;
-}
+/* المودال */
+.modal {position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:999}
+.modal-content {background:rgba(30,30,60,0.98);padding:30px;border-radius:25px;width:90%;max-width:380px;border:2px solid #6496FF}
+.modal-content h2 {color:#FFD700;margin-bottom:25px}
+.modal-content label {display:block;margin:15px 0;font-size:1.3rem}
